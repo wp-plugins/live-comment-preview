@@ -103,7 +103,7 @@ function initLivePreview() {
 			}
 			
 			if(purl) {
-				var name = '<a href="' + purl + '">' + pnme + '</a> says:';
+				var name = '<a href="' + purl + '">' + pnme + '</a> says';
 			} else if(pnme) {
 				var name = pnme + " says";
 			} else {
