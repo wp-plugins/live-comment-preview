@@ -4,7 +4,7 @@ Plugin Name: Live Comment Preview
 Plugin URI: http://dev.wp-plugins.org/wiki/LiveCommentPreview
 Description: Activate to supply users with a live comment preview. Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location.
 Author: <a href="http://thecodepro.com/">Jeff Minard</a> &amp; <a href="http://www.softius.net/">Iacovos Constantinou</a>
-Version: 1.2.1
+Version: 1.3
 */ 
 
 // If you have changed the ID's on your form field elements
