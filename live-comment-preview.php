@@ -4,12 +4,16 @@ Plugin Name: Live Comment Preview
 Plugin URI: http://dev.wp-plugins.org/wiki/LiveCommentPreview
 Description: Activate to supply users with a live comment preview. Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location.
 Author: <a href="http://thecodepro.com/">Jeff Minard</a> &amp; <a href="http://www.softius.net/">Iacovos Constantinou</a>
-Version: 1.5
+Version: 1.6
 */ 
+
+// Customize this string if you want to modify the preview output
+// %1 - author's name (as hyperlink if available)
+// %2 - comment text
+$previewFormat         = "<p><strong>Preview:</strong></p><p><em>%1:</em></p><p>%2</p>";
 
 // If you have changed the ID's on your form field elements
 // You should make them match here
-
 $commentFrom_commentID = 'comment';
 $commentFrom_authorID  = 'author';
 $commentFrom_urlID     = 'url';
@@ -110,8 +114,13 @@ function updateLivePreview() {
 		var name = "You say";
 	}
 	
-	var fullText = '<p><strong>Preview:</strong></p><p><em>' + name + ':</em></p><p>' + cmnt + '</p>';
-	document.getElementById('commentPreview').innerHTML = fullText;			
+    <?php
+    $previewFormat = str_replace("'", "\'", $previewFormat);    
+    $previewFormat = str_replace("%1", "' + name + '", $previewFormat);
+    $previewFormat = str_replace("%2", "' + cmnt + '", $previewFormat);
+    $previewFormat = "'" . $previewFormat . "';\n";
+    ?>
+    document.getElementById('commentPreview').innerHTML = <?php echo $previewFormat; ?>
 }
 
 function initLivePreview() {
