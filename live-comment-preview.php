@@ -4,7 +4,7 @@ Plugin Name: Live Comment Preview
 Plugin URI: http://dev.wp-plugins.org/wiki/LiveCommentPreview
 Description: Activate to supply users with a live comment preview. Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location.
 Author: <a href="http://thecodepro.com/">Jeff Minard</a> &amp; <a href="http://www.softius.net/">Iacovos Constantinou</a>
-Version: 1.3
+Version: 1.5
 */ 
 
 // If you have changed the ID's on your form field elements
@@ -84,37 +84,52 @@ function wpautop(pee) {
 	return pee;
 }
 
-function initLivePreview() {
-	if(!document.getElementById) return false;	
-
-	var commentArea = document.getElementById('<?php echo $commentFrom_commentID ?>');
+function updateLivePreview() {
 	
-	if ( commentArea ) {
-		commentArea.onkeyup = function(){
-			var commentString = this.value;
-			commentString = wpautop(wptexturize(commentString));
+	var cmntArea = document.getElementById('<?php echo $commentFrom_commentID ?>');
+	var pnmeArea = document.getElementById('<?php echo $commentFrom_authorID ?>');
+	var purlArea = document.getElementById('<?php echo $commentFrom_urlID ?>');
+	
+	if( cmntArea )
+		var cmnt = wpautop(wptexturize(cmntArea.value));
+
+	if( pnmeArea )
+		var pnme = pnmeArea.value;
+	
+	if( purlArea )
+		var purl = purlArea.value;
+	
 		
-			if(document.getElementById('<?php echo $commentFrom_authorID ?>')) {
-				var pnme = document.getElementById('<?php echo $commentFrom_authorID ?>').value;
-			}
-			
-			if(document.getElementById('<?php echo $commentFrom_urlID ?>')) {
-				var purl = document.getElementById('<?php echo $commentFrom_urlID ?>').value;
-			}
-			
-			if(purl) {
-				var name = '<a href="' + purl + '">' + pnme + '</a> says';
-			} else if(pnme) {
-				var name = pnme + " says";
-			} else {
-				var name = "You say";
-			}
-			
-			var fullText = '<p><strong>Preview:</strong></p><p><em>' + name + ':</em></p><p>' + commentString + '</p>';
-			document.getElementById('commentPreview').innerHTML = fullText;
-			
-		}	
+	if(purl && pnme) {
+		var name = '<a href="' + purl + '">' + pnme + '</a> says';
+	} else if(!purl && pnme) {
+		var name = pnme + ' says';
+	} else if(purl && !pnme) {
+		var name = '<a href="' + purl + '">You</a> say';
+	} else {
+		var name = "You say";
 	}
+	
+	var fullText = '<p><strong>Preview:</strong></p><p><em>' + name + ':</em></p><p>' + cmnt + '</p>';
+	document.getElementById('commentPreview').innerHTML = fullText;			
+}
+
+function initLivePreview() {
+	if(!document.getElementById)
+		return false;
+
+	var cmntArea = document.getElementById('<?php echo $commentFrom_commentID ?>');
+	var pnmeArea = document.getElementById('<?php echo $commentFrom_authorID ?>');
+	var purlArea = document.getElementById('<?php echo $commentFrom_urlID ?>');
+	
+	if ( cmntArea )
+		cmntArea.onkeyup = updateLivePreview;
+	
+	if ( pnmeArea )
+		pnmeArea.onkeyup = updateLivePreview;
+	
+	if ( purlArea )
+		purlArea.onkeyup = updateLivePreview;	
 }
 
 //========================================================
@@ -137,17 +152,6 @@ addEvent(window, "load", initLivePreview);
 
 <?php die(); }
 
-add_action('comment_form', 'lcp_add_preview_div');
-add_action('wp_head', 'lcp_add_js');
-
-function lcp_add_preview_div($post_id) {
-	global $commentFrom_commentID, $livePreviewDivAdded;
-	if($livePreviewDivAdded == false) {
-		echo $before.'<div id="commentPreview"></div>'.$after;
-		$livePreviewDivAdded = true;
-	}
-	return $post_id;
-}
 
 function live_preview($before='', $after='') {
 	global $livePreviewDivAdded;
@@ -157,9 +161,20 @@ function live_preview($before='', $after='') {
 	}
 }
 
+function lcp_add_preview_div($post_id) {
+	global $commentFrom_commentID, $livePreviewDivAdded;
+	if($livePreviewDivAdded == false) {
+		echo $before.'<div id="commentPreview"></div>'.$after;
+		$livePreviewDivAdded = true;
+	}
+	return $post_id;
+}
 function lcp_add_js($ret) {
 	echo('<script src="' . get_settings('home') . '/wp-content/plugins/live-comment-preview.php/commentPreview.js" type="text/javascript"></script>');
 	return $ret;
 }
+
+add_action('comment_form', 'lcp_add_preview_div');
+add_action('wp_head', 'lcp_add_js');
 
 ?>
