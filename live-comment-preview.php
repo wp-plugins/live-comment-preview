@@ -179,7 +179,7 @@ function lcp_add_preview_div($post_id) {
 	return $post_id;
 }
 function lcp_add_js($ret) {
-	echo('<script src="' . get_settings('home') . '/wp-content/plugins/live-comment-preview.php/commentPreview.js" type="text/javascript"></script>');
+	echo('<script src="' . get_settings('siteurl') . '/wp-content/plugins/live-comment-preview.php/commentPreview.js" type="text/javascript"></script>');
 	return $ret;
 }
 
