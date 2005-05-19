@@ -173,7 +173,7 @@ function live_preview($before='', $after='') {
 function lcp_add_preview_div($post_id) {
 	global $commentFrom_commentID, $livePreviewDivAdded;
 	if($livePreviewDivAdded == false) {
-		echo $before.'<div id="commentPreview"></div>'.$after;
+		echo '<div id="commentPreview"></div>';
 		$livePreviewDivAdded = true;
 	}
 	return $post_id;
