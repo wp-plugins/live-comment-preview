@@ -2,9 +2,9 @@
 /*
 Plugin Name: Live Comment Preview
 Plugin URI: http://dev.wp-plugins.org/wiki/LiveCommentPreview
-Description: Activate to supply users with a live comment preview. Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location.
+Description: Activate to supply users with a live comment preview. <small>Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location.</small>
 Author: <a href="http://thecodepro.com/">Jeff Minard</a> &amp; <a href="http://www.softius.net/">Iacovos Constantinou</a>
-Version: 1.6
+Version: 1.7
 */ 
 
 // Customize this string if you want to modify the preview output
@@ -28,64 +28,68 @@ if( stristr($_SERVER['REQUEST_URI'], 'commentPreview.js') ) {
 	?>
 
 function wptexturize(text) {
-	text 		= ' '+text+' ';
-	var textarr = text.split(/(<[^>]+?>)/g)
-	var istop	= textarr.length;
+	text = ' '+text+' ';
 	var next 	= true;
 	var output 	= '';
-	for ( var i=0; i<istop; i++ ) {
-		var curl = textarr[i];			
-		if ( curl.substr(0,1) != '<' && next == true ) {
-			curl = curl.replace(/---/g, '&#8212;');
-			curl = curl.replace(/--/g, '&#8211;');			
-			curl = curl.replace(/\.{3}/g, '&#8230;');			
-			curl = curl.replace(/``/g, '&#8220;');						
-			
-			curl = curl.replace(/'s/g, '&#8217;s');
-			curl = curl.replace(/'(\d\d(?:&#8217;|')?s)/g, '&#8217;$1');
-			curl = curl.replace(/([\s"])'/g, '$1&#8216;');			
-			curl = curl.replace(/(\d+)"/g, '$1&Prime;');						
-			curl = curl.replace(/(\d+)'/g, '$1&prime;');									
-			curl = curl.replace(/([^\s])'([^'\s])/g, '$1&#8217;$2');	
-			curl = curl.replace(/(\s)"([^\s])/g, '$1&#8220;$2');				
-			curl = curl.replace(/"(\s)/g, '&#8221;$1');						
-			curl = curl.replace(/'(\s|.)/g, '&#8217;$1');	
-			curl = curl.replace(/\(tm\)/ig, '&#8482;');	
-			curl = curl.replace(/\(c\)/ig, '&#169;');
-			curl = curl.replace(/\(r\)/ig, '&#174;');
-			curl = curl.replace(/''/g, '&#8221;');	
-			
-			curl = curl.replace(/(\d+)x(\d+)/g, '$1&#215;$2');	
-		} else if ( curl.substr(0,5) == '<code' ) {
+	var prev 	= 0;
+	var length 	= text.length;
+	while ( prev < length ) {
+		var index = text.indexOf('<', prev);
+		if ( index > -1 ) {
+			if ( index == prev ) {
+				index = text.indexOf('>', prev);
+			}
+			index++;
+		} else {
+			index = length;
+		}
+		var s = text.substring(prev, index);
+		prev = index;
+		if ( s.substr(0,1) != '<' && next == true ) {
+			s = s.replace(/---/g, '&#8212;');
+			s = s.replace(/--/g, '&#8211;');
+			s = s.replace(/\.{3}/g, '&#8230;');
+			s = s.replace(/``/g, '&#8220;');
+			s = s.replace(/'s/g, '&#8217;s');
+			s = s.replace(/'(\d\d(?:&#8217;|')?s)/g, '&#8217;$1');
+			s = s.replace(/([\s"])'/g, '$1&#8216;');
+			s = s.replace(/(\d+)"/g, '$1&Prime;');
+			s = s.replace(/(\d+)'/g, '$1&prime;');
+			s = s.replace(/([^\s])'([^'\s])/g, '$1&#8217;$2');
+			s = s.replace(/(\s)"([^\s])/g, '$1&#8220;$2');
+			s = s.replace(/"(\s)/g, '&#8221;$1');
+			s = s.replace(/'(\s|.)/g, '&#8217;$1');
+			s = s.replace(/\(tm\)/ig, '&#8482;');
+			s = s.replace(/\(c\)/ig, '&#169;');
+			s = s.replace(/\(r\)/ig, '&#174;');
+			s = s.replace(/''/g, '&#8221;');
+			s = s.replace(/(\d+)x(\d+)/g, '$1&#215;$2');
+		} else if ( s.substr(0,5) == '<code' ) {
 			next = false;
 		} else {
 			next = true;
 		}
-		output += curl; 
+		output += s; 
 	}
-	return output.substr(1, output.length-2);
+	return output.substr(1, output.length-2);	
 }
 
-function wpautop(pee) {
-	pee = pee + '\n\n';
-	
-	pee = pee.replace(/(<blockquote[^>]*>)/g, '\n$1');
-	pee = pee.replace(/(<\/blockquote[^>]*>)/g, '$1\n');
-		
-	pee = pee.replace(/\r\n/g, '\n');
-	pee = pee.replace(/\r/g, '\n');
-	pee = pee.replace(/\n\n+/g, '\n\n');
-	pee = pee.replace(/\n?(.+?)(?:\n\s*\n)/g, '<p>$1</p>');
-	pee = pee.replace(/<p>\s*?<\/p>/g, '');
-
-	pee = pee.replace(/<p>\s*(<\/?blockquote[^>]*>)\s*<\/p>/g, '$1');
-	pee = pee.replace(/<p><blockquote([^>]*)>/ig, '<blockquote$1><p>');
-	pee = pee.replace(/<\/blockquote><\/p>/ig, '<p></blockquote>');	
-	pee = pee.replace(/<p>\s*<blockquote([^>]*)>/ig, '<blockquote$1>');
-	pee = pee.replace(/<\/blockquote>\s*<\/p>/ig, '</blockquote>');			
-	
-	pee = pee.replace(/\s*\n\s*/g, '<br />');
-	return pee;
+function wpautop(p) {
+	p = p + '\n\n';
+	p = p.replace(/(<blockquote[^>]*>)/g, '\n$1');
+	p = p.replace(/(<\/blockquote[^>]*>)/g, '$1\n');
+	p = p.replace(/\r\n/g, '\n');
+	p = p.replace(/\r/g, '\n');
+	p = p.replace(/\n\n+/g, '\n\n');
+	p = p.replace(/\n?(.+?)(?:\n\s*\n)/g, '<p>$1</p>');
+	p = p.replace(/<p>\s*?<\/p>/g, '');
+	p = p.replace(/<p>\s*(<\/?blockquote[^>]*>)\s*<\/p>/g, '$1');
+	p = p.replace(/<p><blockquote([^>]*)>/ig, '<blockquote$1><p>');
+	p = p.replace(/<\/blockquote><\/p>/ig, '<p></blockquote>');	
+	p = p.replace(/<p>\s*<blockquote([^>]*)>/ig, '<blockquote$1>');
+	p = p.replace(/<\/blockquote>\s*<\/p>/ig, '</blockquote>');	
+	p = p.replace(/\s*\n\s*/g, '<br />');
+	return p;
 }
 
 function updateLivePreview() {
@@ -102,7 +106,6 @@ function updateLivePreview() {
 	
 	if( purlArea )
 		var purl = purlArea.value;
-	
 		
 	if(purl && pnme) {
 		var name = '<a href="' + purl + '">' + pnme + '</a> says';
