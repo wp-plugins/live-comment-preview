@@ -1,6 +1,6 @@
 === Live Comment Preview ===
 Contributors: bradt, chuyskywalker
-Tags: linkedin, resume, hresume, microformat, cv
+Tags: comment, comments, preview
 Requires at least: 1.5
 Tested up to: 2.3
 Version: 2.0
