@@ -1,29 +1,57 @@
 <?php
 /*
 Plugin Name: Live Comment Preview
-Plugin URI: http://dev.wp-plugins.org/wiki/LiveCommentPreview
-Description: Activate to supply users with a live comment preview. <small>Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location.</small>
-Author: <a href="http://thecodepro.com/">Jeff Minard</a> &amp; <a href="http://www.softius.net/">Iacovos Constantinou</a>
-Version: 1.7
+Plugin URI: http://wordpress.org/extend/plugins/live-comment-preview/
+Description: Supply users with a live comment preview. Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location. Based on version 1.7 by <a href="http://jm.cc/">Jeff Minard</a>.
+Author: Brad Touesnard
+Author URI: http://bradt.ca/
+Version: 1.8
+
+	Copyright 2007  Brad Touesnard  (http://bradt.ca/)
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to the Free Software
+	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */ 
 
-// Customize this string if you want to modify the preview output
-// %1 - author's name (as hyperlink if available)
-// %2 - comment text
-$previewFormat         = "<p><strong>Preview:</strong></p><p><em>%1:</em></p><p>%2</p>";
+function lcp_output_js() {
 
-// If you have changed the ID's on your form field elements
-// You should make them match here
-$commentFrom_commentID = 'comment';
-$commentFrom_authorID  = 'author';
-$commentFrom_urlID     = 'url';
+	// Customize this string if you want to modify the preview output
+	// %1 - author's name (as hyperlink if available)
+	// %2 - comment text
+	// %3 - gravatar image url
+	$previewFormat = '
+		<ol class="commentlist" style="clear: both; margin-top: 3em;">
+			<li id="comment-preview" class="alt" style="overflow: hidden;">
+				<img src="%3" alt="" class="gravatar" style="float: left; margin-right: 10px;"/>
+				<cite>%1</cite> Says:
+				<br />
+				%2
+			</li>
+		</ol>';
 
+	// If you have changed the ID's on your form field elements
+	// You should make them match here
+	$commentFrom_commentID = 'comment';
+	$commentFrom_authorID  = 'author';
+	$commentFrom_urlID     = 'url';
+	$commentFrom_emailID     = 'email';
 
-// You shouldn't need to edit anything else.
+	// Default gravatar image
+	$gravatar_default = get_option('siteurl') . '/wp-content/plugins/live-comment-preview/gravatar.png';
 
-$livePreviewDivAdded == false;
+	// You shouldn't need to edit anything else.
 
-if( stristr($_SERVER['REQUEST_URI'], 'commentPreview.js') ) {
 	header('Content-type: text/javascript');
 	?>
 
@@ -97,6 +125,7 @@ function updateLivePreview() {
 	var cmntArea = document.getElementById('<?php echo $commentFrom_commentID ?>');
 	var pnmeArea = document.getElementById('<?php echo $commentFrom_authorID ?>');
 	var purlArea = document.getElementById('<?php echo $commentFrom_urlID ?>');
+	var emlArea = document.getElementById('<?php echo $commentFrom_emailID ?>');
 	
 	if( cmntArea )
 		var cmnt = wpautop(wptexturize(cmntArea.value));
@@ -107,20 +136,30 @@ function updateLivePreview() {
 	if( purlArea )
 		var purl = purlArea.value;
 		
+	if ( emlArea )
+		var eml = emlArea.value;
+		
 	if(purl && pnme) {
-		var name = '<a href="' + purl + '">' + pnme + '</a> says';
+		var name = '<a href="' + purl + '">' + pnme + '</a>';
 	} else if(!purl && pnme) {
-		var name = pnme + ' says';
+		var name = pnme;
 	} else if(purl && !pnme) {
 		var name = '<a href="' + purl + '">You</a> say';
 	} else {
 		var name = "You say";
 	}
 	
+	var gravatar = '<?php echo $gravatar_default; ?>';
+	if (eml != '') {
+		gravatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' + hex_md5(eml) + '&amp;default=<?php echo urlencode($gravatar_default); ?>';
+	}
+	
     <?php
-    $previewFormat = str_replace("'", "\'", $previewFormat);    
+    $previewFormat = str_replace("\r\n", "", $previewFormat);
+    $previewFormat = str_replace("'", "\'", $previewFormat);
     $previewFormat = str_replace("%1", "' + name + '", $previewFormat);
     $previewFormat = str_replace("%2", "' + cmnt + '", $previewFormat);
+    $previewFormat = str_replace("%3", "' + gravatar + '", $previewFormat);
     $previewFormat = "'" . $previewFormat . "';\n";
     ?>
     document.getElementById('commentPreview').innerHTML = <?php echo $previewFormat; ?>
@@ -162,31 +201,38 @@ function addEvent(obj, evType, fn){
 
 addEvent(window, "load", initLivePreview);
 
-<?php die(); }
-
+	<?php
+	// Add the MD5 functions using PHP so we only 
+	// need to make 1 request to the web server for JS
+	$plugin_path = dirname(__FILE__);
+	$md5_file = $plugin_path . '/md5.js';
+	@include($md5_file);
+	
+	// We're done outputting JS
+	die();
+}
 
 function live_preview($before='', $after='') {
 	global $livePreviewDivAdded;
 	if($livePreviewDivAdded == false) {
+		// We don't want this included in every page 
+		// so we add it here instead of using the wphead filter
+		echo '<script src="' . get_option('siteurl') . '/?live-comment-preview.js" type="text/javascript"></script>';
 		echo $before.'<div id="commentPreview"></div>'.$after;
 		$livePreviewDivAdded = true;
 	}
 }
 
 function lcp_add_preview_div($post_id) {
-	global $commentFrom_commentID, $livePreviewDivAdded;
-	if($livePreviewDivAdded == false) {
-		echo '<div id="commentPreview"></div>';
-		$livePreviewDivAdded = true;
-	}
+	live_preview();
 	return $post_id;
 }
-function lcp_add_js($ret) {
-	echo('<script src="' . get_settings('siteurl') . '/wp-content/plugins/live-comment-preview.php/commentPreview.js" type="text/javascript"></script>');
-	return $ret;
+
+$livePreviewDivAdded == false;
+
+if( stristr($_SERVER['REQUEST_URI'], 'live-comment-preview.js') ) {
+	add_action('template_redirect', 'lcp_output_js');
 }
 
 add_action('comment_form', 'lcp_add_preview_div');
-add_action('wp_head', 'lcp_add_js');
-
 ?>
