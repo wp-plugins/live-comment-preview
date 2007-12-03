@@ -1,5 +1,5 @@
 === Live Comment Preview ===
-Contributors: bradt, chuyskywalker
+Contributors: bradt
 Tags: comment, comments, preview
 Requires at least: 1.5
 Tested up to: 2.3
@@ -52,11 +52,13 @@ However, you most likely will not need to change any of this.
 
 == Release Notes ==
 
-* 1.7 - 2005-06-05<br />
-  Last release by Jeff Minard
+* 1.8.1 - 2007-12-02<br />
+  Bug fix: Javascript doesn't load for users who have WP in a subdirectory.
 * 1.8 - 2007-11-29<br />
   First release by Brad Touesnard<br />
   Added [Gravatar](http://www.gravatar.com/) support
+* 1.7 - 2005-06-05<br />
+  Last release by Jeff Minard
 
 
 == Thanks! ==
