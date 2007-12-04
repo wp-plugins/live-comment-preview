@@ -3,7 +3,6 @@ Contributors: bradt
 Tags: comment, comments, preview
 Requires at least: 1.5
 Tested up to: 2.3
-Version: 2.0
 Stable tag: trunk
 
 Live Comment Preview is the simplest way to get live comment previews on your site. Simply activate the plugin -- That's it!
@@ -52,6 +51,8 @@ However, you most likely will not need to change any of this.
 
 == Release Notes ==
 
+* 1.8.2 - 2007-12-03<br />
+  Bug fix: Only works if blog url is the web site root.
 * 1.8.1 - 2007-12-02<br />
   Bug fix: Javascript doesn't load for users who have WP in a subdirectory.
 * 1.8 - 2007-11-29<br />
