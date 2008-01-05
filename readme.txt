@@ -3,7 +3,7 @@ Contributors: bradt
 Tags: comment, comments, preview
 Requires at least: 1.5
 Tested up to: 2.3
-Stable tag: trunk
+Stable tag: 1.8.2
 
 Live Comment Preview is the simplest way to get live comment previews on your site. Simply activate the plugin -- That's it!
 
