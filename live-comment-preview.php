@@ -127,26 +127,34 @@ function updateLivePreview() {
 	var purlArea = document.getElementById('<?php echo $commentFrom_urlID ?>');
 	var emlArea = document.getElementById('<?php echo $commentFrom_emailID ?>');
 	
-	if( cmntArea )
+	if( cmntArea != null )
 		var cmnt = wpautop(wptexturize(cmntArea.value));
+	else
+		var cmnt = '';
 
-	if( pnmeArea )
+	if( pnmeArea != null )
 		var pnme = pnmeArea.value;
+	else
+		var pnme = '';
 	
-	if( purlArea )
+	if( purlArea != null )
 		var purl = purlArea.value;
+	else
+		var purl = '';
 		
-	if ( emlArea )
+	if ( emlArea != null )
 		var eml = emlArea.value;
+	else
+		var eml = '';
 		
 	if(purl && pnme) {
 		var name = '<a href="' + purl + '">' + pnme + '</a>';
 	} else if(!purl && pnme) {
 		var name = pnme;
 	} else if(purl && !pnme) {
-		var name = '<a href="' + purl + '">You</a> say';
+		var name = '<a href="' + purl + '">You</a>';
 	} else {
-		var name = "You say";
+		var name = "You";
 	}
 	
 	var gravatar = '<?php echo $gravatar_default; ?>';
