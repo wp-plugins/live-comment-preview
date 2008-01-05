@@ -155,7 +155,8 @@ function updateLivePreview() {
 	}
 	
     <?php
-    $previewFormat = str_replace("\r\n", "", $previewFormat);
+    $previewFormat = str_replace("\r", "", $previewFormat);
+    $previewFormat = str_replace("\n", "", $previewFormat);
     $previewFormat = str_replace("'", "\'", $previewFormat);
     $previewFormat = str_replace("%1", "' + name + '", $previewFormat);
     $previewFormat = str_replace("%2", "' + cmnt + '", $previewFormat);
