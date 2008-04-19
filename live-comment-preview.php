@@ -25,6 +25,7 @@ Version: 1.8.2
 */ 
 
 function lcp_output_js() {
+	global $user_ID, $user_identity;
 
 	// Customize this string if you want to modify the preview output
 	// %1 - author's name (as hyperlink if available)
@@ -49,6 +50,14 @@ function lcp_output_js() {
 
 	// Default gravatar image
 	$gravatar_default = get_option('siteurl') . '/wp-content/plugins/live-comment-preview/gravatar.png';
+
+	// Default name
+	if ($user_ID) {
+		$default_name = $user_identity;
+	}
+	else {
+		$default_name = 'Anonymous';
+	}
 
 	// You shouldn't need to edit anything else.
 
@@ -152,13 +161,13 @@ function updateLivePreview() {
 	} else if(!purl && pnme) {
 		var name = pnme;
 	} else if(purl && !pnme) {
-		var name = '<a href="' + purl + '">You</a>';
+		var name = '<a href="' + purl + '"><?php echo addslashes($default_name); ?></a>';
 	} else {
-		var name = "You";
+		var name = "<?php echo addslashes($default_name); ?>";
 	}
 	
 	var gravatar = '<?php echo $gravatar_default; ?>';
-	if (eml != '') {
+	if (eml) {
 		gravatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' + hex_md5(eml) + '&amp;default=<?php echo urlencode($gravatar_default); ?>';
 	}
 	
