@@ -27,6 +27,11 @@ Version: 1.8.2
 function lcp_output_js() {
 	global $user_ID, $user_identity;
 
+	// Gravatar settings
+	$gravatar_size = 32;
+	$gravatar_default = 'http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536';
+	$gravatar_rating = get_option('avatar_rating');
+
 	// Customize this string if you want to modify the preview output
 	// %1 - author's name (as hyperlink if available)
 	// %2 - comment text
@@ -34,7 +39,7 @@ function lcp_output_js() {
 	$previewFormat = '
 		<ol class="commentlist" style="clear: both; margin-top: 3em;">
 			<li id="comment-preview" class="alt" style="overflow: hidden;">
-				<img src="%3" alt="" class="gravatar" style="float: left; margin-right: 10px;"/>
+				<img src="%3" alt="" class="avatar avatar-' . $gravatar_size . '" width="' . $gravatar_size . '" height="' . $gravatar_size . '"/>
 				<cite>%1</cite> Says:
 				<br />
 				%2
@@ -48,12 +53,15 @@ function lcp_output_js() {
 	$commentFrom_urlID     = 'url';
 	$commentFrom_emailID     = 'email';
 
-	// Default gravatar image
-	$gravatar_default = get_option('siteurl') . '/wp-content/plugins/live-comment-preview/gravatar.png';
-
+	$user_gravatar = '';
 	// Default name
 	if ($user_ID) {
 		$default_name = $user_identity;
+
+		$user = get_userdata($user_ID);
+		if ($user) {
+			$user_gravatar = 'http://www.gravatar.com/avatar/' . md5(strtolower($user->user_email));
+		}
 	}
 	else {
 		$default_name = 'Anonymous';
@@ -164,14 +172,26 @@ function updateLivePreview() {
 		var name = '<a href="' + purl + '"><?php echo addslashes($default_name); ?></a>';
 	} else {
 		var name = "<?php echo addslashes($default_name); ?>";
+	}	
+	
+	var user_gravatar = '<?php echo addslashes($user_gravatar); ?>';
+	var gravatar = '<?php echo addslashes($gravatar_default); ?>?';
+	if (eml != '') {
+		gravatar = 'http://www.gravatar.com/avatar/' + hex_md5(eml) + '?d=<?php echo urlencode($gravatar_default); ?>&amp;';
+	}
+	else if (user_gravatar != '') {
+		gravatar = user_gravatar + '?d=<?php echo urlencode($gravatar_default); ?>&amp;';
 	}
 	
-	var gravatar = '<?php echo $gravatar_default; ?>';
-	if (eml) {
-		gravatar = 'http://www.gravatar.com/avatar.php?gravatar_id=' + hex_md5(eml) + '&amp;default=<?php echo urlencode($gravatar_default); ?>';
-	}
+	gravatar += 's=<?php echo $gravatar_size; ?>';
 	
     <?php
+	if (!empty($gravatar_rating)) {
+		?>
+		gravatar += '&amp;r=<?php echo urlencode($gravatar_rating) ?>';
+		<?php
+	}
+
     $previewFormat = str_replace("\r", "", $previewFormat);
     $previewFormat = str_replace("\n", "", $previewFormat);
     $previewFormat = str_replace("'", "\'", $previewFormat);
