@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/live-comment-preview/
 Description: Supply users with a live comment preview. Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location. Based on version 1.7 by <a href="http://jm.cc/">Jeff Minard</a>.
 Author: Brad Touesnard
 Author URI: http://bradt.ca/
-Version: 1.8.2
+Version: 1.9
 
 	Copyright 2007  Brad Touesnard  (http://bradt.ca/)
 
