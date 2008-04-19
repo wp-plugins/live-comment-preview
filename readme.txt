@@ -2,8 +2,8 @@
 Contributors: bradt
 Tags: comment, comments, preview
 Requires at least: 1.5
-Tested up to: 2.3
-Stable tag: 1.8.2
+Tested up to: 2.5
+Stable tag: 1.9
 
 Live Comment Preview is the simplest way to get live comment previews on your site. Simply activate the plugin -- That's it!
 
@@ -51,6 +51,9 @@ However, you most likely will not need to change any of this.
 
 == Release Notes ==
 
+* 1.9 - 2008-04-19<br />
+  Added support for Wordpress 2.5's gravatar settings.<br />
+  [Several Bug Fixes](http://dev.wp-plugins.org/log/live-comment-preview?action=stop_on_copy&rev=41675&stop_rev=28426&mode=stop_on_copy&verbose=on)
 * 1.8.2 - 2007-12-03<br />
   Bug fix: Only works if blog url is the web site root.
 * 1.8.1 - 2007-12-02<br />
