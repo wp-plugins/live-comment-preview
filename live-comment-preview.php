@@ -2,50 +2,123 @@
 /*
 Plugin Name: Live Comment Preview
 Plugin URI: http://wordpress.org/extend/plugins/live-comment-preview/
-Description: Supply users with a live comment preview. Use the function &lt;?php live_preview() ?&gt; to display the live preview in a different location. Based on version 1.7 by <a href="http://jm.cc/">Jeff Minard</a>.
+Description: Displays a preview of the user's comment as they type it.
 Author: Brad Touesnard
 Author URI: http://bradt.ca/
-Version: 1.9
+Version: 2.0b1
 
-	Copyright 2007  Brad Touesnard  (http://bradt.ca/)
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */ 
 
 function lcp_output_js() {
 	global $user_ID, $user_identity;
 
-	// Gravatar settings
-	$gravatar_size = 32;
-	$gravatar_default = 'http://www.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536';
-	$gravatar_rating = get_option('avatar_rating');
+	// Avatar settings
+	$avatar_size = 32;
+	$avatar_default = get_option('avatar_default');
+	$avatar_rating = get_option('avatar_rating');
 
-	// Customize this string if you want to modify the preview output
-	// %1 - author's name (as hyperlink if available)
-	// %2 - comment text
-	// %3 - gravatar image url
-	$previewFormat = '
-		<ol class="commentlist" style="clear: both; margin-top: 3em;">
-			<li id="comment-preview" class="alt" style="overflow: hidden;">
-				<img src="%3" alt="" class="avatar avatar-' . $gravatar_size . '" width="' . $gravatar_size . '" height="' . $gravatar_size . '"/>
-				<cite>%1</cite> Says:
-				<br />
-				%2
-			</li>
-		</ol>';
+	$previewFormat = '';
 
+	$file = TEMPLATEPATH . '/comment-preview.php';
+	if (file_exists($file)) {
+		ob_start();
+		include($file);
+		$previewFormat = ob_get_clean();
+
+		// Get avatar size
+		if (preg_match('@<img(.*?)class=.avatar(.*?)>@s', $previewFormat, $matches)) {
+			$img_tag = $matches[0];
+			
+			if (preg_match('@width=.([0-9]+)@', $img_tag, $matches)) {
+				$avatar_size = $matches[1];
+			}
+		}
+	}
+
+	$file = TEMPLATEPATH . '/comments.php';
+	if (!$previewFormat && file_exists($file)) {
+		global $wp_query, $comments, $comment, $post;
+		
+		$post->comment_status = 'open';
+		
+		$comment->comment_ID = 'lcp';
+		$comment->comment_content = 'COMMENT_CONTENT';
+		$comment->comment_author = 'COMMENT_AUTHOR';
+		$comment->comment_date = time();
+		
+		$wp_query->comment = $comment;
+		$wp_query->comments = $comments = array($comment);
+		$wp_query->current_comment = -1;
+		$wp_query->comment_count = 1;
+		
+		ob_start();
+		include($file);
+		$html = ob_get_clean();
+
+		if (preg_match('@<ol(.*?)class=.commentlist(.*)</ol>@s', $html, $matches)) {
+			$previewFormat = $matches[0];
+			
+			$previewFormat = preg_replace('@http://COMMENT_AUTHOR_URL@', 'COMMENT_AUTHOR_URL', $previewFormat);
+			
+			if (preg_match('@<img(.*?)class=.avatar(.*?)>@s', $previewFormat, $matches)) {
+				$img_tag = $matches[0];
+				$new_img_tag = preg_replace('@src=("|\')(.*?)("|\')@', 'src=$1AVATAR_URL$3', $img_tag);
+				$previewFormat = str_replace($img_tag, $new_img_tag, $previewFormat);
+				
+				if (preg_match('@width=.([0-9]+)@', $img_tag, $matches)) {
+					$avatar_size = $matches[1];
+				}
+			}
+		}
+	}
+
+	if ( !$avatar_default )
+		$avatar_default = 'mystery';
+
+	if ( is_ssl() ) {
+		$host = 'https://secure.gravatar.com';
+	} else {
+		if ( !empty($email) )
+			$host = sprintf( "http://%d.gravatar.com", ( hexdec( $email_hash{0} ) % 2 ) );
+		else
+			$host = 'http://0.gravatar.com';
+	}
+		
+	if ( 'mystery' == $avatar_default )
+		$avatar_default = "$host/avatar/ad516503a11cd5ca435acc9bb6523536?s={$avatar_size}"; // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
+	elseif ( 'blank' == $avatar_default )
+		$avatar_default = includes_url('images/blank.gif');
+	elseif ( 'gravatar_default' == $avatar_default )
+		$avatar_default = "$host/avatar/s={$avatar_size}";
+	elseif ( strpos($avatar_default, 'http://') === 0 )
+		$avatar_default = add_query_arg( 's', $avatar_size, $avatar_default );
+	
+	// Just in case the other two methods didn't work out
+	if (!$previewFormat) {
+		$previewFormat = '
+			<ol class="commentlist" style="clear: both; margin-top: 3em;">
+				<li id="comment-preview" class="alt" style="overflow: hidden;">
+					<img src="' . $avatar_default . '" alt="" class="avatar avatar-' . $avatar_size . '" width="' . $avatar_size . '" height="' . $avatar_size . '"/>
+					<cite>COMMENT_AUTHOR</cite> Says:
+					<br />
+					COMMENT_CONTENT
+				</li>
+			</ol>';
+	}
+	
 	// If you have changed the ID's on your form field elements
 	// You should make them match here
 	$commentFrom_commentID = 'comment';
@@ -70,7 +143,10 @@ function lcp_output_js() {
 	// You shouldn't need to edit anything else.
 
 	header('Content-type: text/javascript');
+	global $allowedtags;
 	?>
+
+var allowedtags=['<?= implode("', '", array_keys($allowedtags)) ?>'];
 
 function wptexturize(text) {
 	text = ' '+text+' ';
@@ -78,6 +154,7 @@ function wptexturize(text) {
 	var output 	= '';
 	var prev 	= 0;
 	var length 	= text.length;
+	var tagsre = new RegExp('^/?(' + allowedtags.join('|') + ')\\b', 'i');
 	while ( prev < length ) {
 		var index = text.indexOf('<', prev);
 		if ( index > -1 ) {
@@ -90,7 +167,11 @@ function wptexturize(text) {
 		}
 		var s = text.substring(prev, index);
 		prev = index;
-		if ( s.substr(0,1) != '<' && next == true ) {
+		if (output.match(/<$/) && !s.match(tagsre)) {
+			// jwz: omit illegal tags
+			output = output.replace(/<$/, ' ');
+			s = s.replace(/^[^>]*(>|$)/, '');
+		} else if ( s.substr(0,1) != '<' && next == true ) {
 			s = s.replace(/---/g, '&#8212;');
 			s = s.replace(/--/g, '&#8211;');
 			s = s.replace(/\.{3}/g, '&#8230;');
@@ -175,29 +256,29 @@ function updateLivePreview() {
 	}	
 	
 	var user_gravatar = '<?php echo addslashes($user_gravatar); ?>';
-	var gravatar = '<?php echo addslashes($gravatar_default); ?>?';
+	var gravatar = '<?php echo addslashes($avatar_default); ?>?';
 	if (eml != '') {
-		gravatar = 'http://www.gravatar.com/avatar/' + hex_md5(eml) + '?d=<?php echo urlencode($gravatar_default); ?>&amp;';
+		gravatar = 'http://www.gravatar.com/avatar/' + hex_md5(eml) + '?d=<?php echo urlencode($avatar_default); ?>&amp;';
 	}
 	else if (user_gravatar != '') {
-		gravatar = user_gravatar + '?d=<?php echo urlencode($gravatar_default); ?>&amp;';
+		gravatar = user_gravatar + '?d=<?php echo urlencode($avatar_default); ?>&amp;';
 	}
 	
-	gravatar += 's=<?php echo $gravatar_size; ?>';
+	gravatar += 's=<?php echo $avatar_size; ?>';
 	
     <?php
-	if (!empty($gravatar_rating)) {
+	if (!empty($avatar_rating)) {
 		?>
-		gravatar += '&amp;r=<?php echo urlencode($gravatar_rating) ?>';
+		gravatar += '&amp;r=<?php echo urlencode($avatar_rating) ?>';
 		<?php
 	}
 
     $previewFormat = str_replace("\r", "", $previewFormat);
     $previewFormat = str_replace("\n", "", $previewFormat);
     $previewFormat = str_replace("'", "\'", $previewFormat);
-    $previewFormat = str_replace("%1", "' + name + '", $previewFormat);
-    $previewFormat = str_replace("%2", "' + cmnt + '", $previewFormat);
-    $previewFormat = str_replace("%3", "' + gravatar + '", $previewFormat);
+    $previewFormat = str_replace("COMMENT_AUTHOR", "' + name + '", $previewFormat);
+    $previewFormat = str_replace("COMMENT_CONTENT", "' + cmnt + '", $previewFormat);
+    $previewFormat = str_replace("AVATAR_URL", "' + gravatar + '", $previewFormat);
     $previewFormat = "'" . $previewFormat . "';\n";
     ?>
     document.getElementById('commentPreview').innerHTML = <?php echo $previewFormat; ?>
@@ -273,4 +354,3 @@ if( stristr($_SERVER['REQUEST_URI'], 'live-comment-preview.js') ) {
 }
 
 add_action('comment_form', 'lcp_add_preview_div');
-?>

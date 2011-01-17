@@ -2,20 +2,26 @@
 Contributors: bradt
 Tags: comment, comments, preview
 Requires at least: 1.5
-Tested up to: 2.5
-Stable tag: 1.9
+Tested up to: 3.0.4
+Stable tag: 2.0b1
 
-Live Comment Preview is the simplest way to get live comment previews on your site. Simply activate the plugin -- That's it!
+Displays a preview of the user's comment as they type it.
 
 == Description ==
 
-Live Comment Preview is the simplest way to get live comment previews on your site. Simply activate the plugin -- That's it!
+= Latest Version: 2.0 Beta 1 =
+* Zero configuration required / intelligent parsing of theme comment HTML
+* Disallowed HTML tags are stripped from the preview (thanks to Jamie Zawinski)
 
-This plugin uses only client-side Javascript to format a preview, it does not make any Ajax requests to the server. This provides a smooth live preview as you type.
+Live Comment Preview (LCP) allows your users to see how their comment will
+appear on the site as they type it.
+
+Uses client-side Javascript only (no Ajax requests to the server) which means a
+responsive, smooth, live comment preview.
 
 == Installation ==
 
-Installing Live Comment Preview is ridiculously simple:
+Use Wordpress' built-in plugin installer, or do a manual install:
 
 1. Download live-comment-preview.zip
 2. Unzip the archive
@@ -28,42 +34,56 @@ Enjoy!
 
 1. What the comment preview looks like in Kubrick after being activated. Easy!
 
-== Usage / Caveats ==
+== Frequently Asked Questions ==
 
-The plugin will work automatically on either of the default templates. However, if you're using a 3rd party or you've customized it, the commentPreview DIV may not be showing up in the source code. Should that be the case:
+= Why isn't the comment preview showing up? =
 
-You can have the commentPreview div show up where ever you want if you use the code
+First, check your theme's comments.php file. It must contain the code
+<code>&lt;?php comment_form(); ?&gt;</code> or <code>&lt;?php
+do_action('comment_form', $post->ID); ?&gt;</code>. If it doesn't, you will need
+to add it in.
 
-&lt;?php live_preview() ?&gt;
+Second, if the comment form fields do not have the proper id values (same ones
+as the default Wordpress theme), the comment preview will not work.
 
-And this is where the div will show up in both of the WP default templates:
+= Can I make the preview display in another location? =
 
-&lt;?php do_action('comment_form', $post->ID); ?&gt;
+Yes, you can add the code &lt;?php live_preview(); ?&gt; in comments.php where
+you want the preview to be show.
 
-Finally, if you've seriously changed the markup to your comment form (messing with ID's), then you may need to edit the plugin itself to match the ID's that you changed. They are stored in easy to change variables at the top of the plugin.
+= Can I supply my own HTML for the comment preview? =
 
-However, you most likely will not need to change any of this.
+Yes, simply create a file called comment-preview.php in your theme folder and
+insert the strings COMMENT_CONTENT, COMMENT_AUTHOR, and AVATAR_URL where you would
+like the respective content to show up.
 
-== To Do ==
+== Changelog ==
 
-* Add an WP Options page to manage plugin settings and make updates easier
-* Add support for smiley icons
+= 2.0b1 (2010-01-16) =
+* Zero configuration required / intelligent parsing of theme comment HTML
+* Disallowed HTML tags are stripped from the preview (thanks to Jamie Zawinski)
 
-== Release Notes ==
+= 1.9 (2008-04-19) =
+* Added support for Wordpress 2.5's gravatar settings.
+* [Several Bug Fixes](http://dev.wp-plugins.org/log/live-comment-preview?action=stop_on_copy&rev=41675&stop_rev=28426&mode=stop_on_copy&verbose=on)
 
-* 1.9 - 2008-04-19<br />
-  Added support for Wordpress 2.5's gravatar settings.<br />
-  [Several Bug Fixes](http://dev.wp-plugins.org/log/live-comment-preview?action=stop_on_copy&rev=41675&stop_rev=28426&mode=stop_on_copy&verbose=on)
-* 1.8.2 - 2007-12-03<br />
-  Bug fix: Only works if blog url is the web site root.
-* 1.8.1 - 2007-12-02<br />
-  Bug fix: Javascript doesn't load for users who have WP in a subdirectory.
-* 1.8 - 2007-11-29<br />
-  First release by Brad Touesnard<br />
-  Added [Gravatar](http://www.gravatar.com/) support
-* 1.7 - 2005-06-05<br />
-  Last release by Jeff Minard
+= 1.8.2 (2007-12-03) =
+* Bug fix: Only works if blog url is the web site root.
 
+= 1.8.1 (2007-12-02) =
+* Bug fix: Javascript doesn't load for users who have WP in a subdirectory.
+
+= 1.8 (2007-11-29) =
+* First release by Brad Touesnard
+* Added [Gravatar](http://www.gravatar.com/) support
+
+= 1.7 (2005-06-05) =
+* Last release by Jeff Minard
+
+== Upgrade Notice ==
+
+= 2.0b1 =
+This is a beta release, has not been fully tested, and could cause problems. Do not upgrade if you're unsure what you're doing.
 
 == Thanks! ==
 
