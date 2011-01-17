@@ -35,7 +35,7 @@ Enjoy!
 
 == Screenshots ==
 
-1. What the comment preview looks like in Kubrick after being activated. Easy!
+1. Comment preview in Wordpress' default theme Twenty Ten
 
 == Frequently Asked Questions ==
 
@@ -54,6 +54,12 @@ as the default Wordpress theme), the comment preview will not work.
 Yes, you can add the code &lt;?php live_preview(); ?&gt; in comments.php where
 you want the preview to be show.
 
+= Why doesn't the comment preview look like the rest of the comments? =
+
+Most likely because your theme does not use the standard comment HTML used by
+the Wordpress default theme. Comments should be wrapped in
+<code>&lt;ol class="commentlist"&gt;&lt;/ol&gt;</code>.
+
 = Can I supply my own HTML for the comment preview? =
 
 Yes, simply create a file called comment-preview.php in your theme folder and
@@ -62,7 +68,7 @@ like the respective content to show up.
 
 == Changelog ==
 
-= 2.0b1 (2010-01-16) =
+= 2.0b1 (2011-01-16) =
 * Zero configuration required / intelligent parsing of theme comment HTML
 * Disallowed HTML tags are stripped from the preview (thanks to Jamie Zawinski)
 

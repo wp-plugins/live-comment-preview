@@ -146,7 +146,7 @@ function lcp_output_js() {
 	global $allowedtags;
 	?>
 
-var allowedtags=['<?= implode("', '", array_keys($allowedtags)) ?>'];
+var allowedtags=['<?php implode("', '", array_keys($allowedtags)) ?>'];
 
 function wptexturize(text) {
 	text = ' '+text+' ';
