@@ -10,6 +10,9 @@ Displays a preview of the user's comment as they type it.
 == Description ==
 
 = Latest Version: 2.0 Beta 1 =
+**This is a beta release, may not work, and may require changes to your theme files.
+Do not upgrade if you're unsure what you're doing.**
+
 * Zero configuration required / intelligent parsing of theme comment HTML
 * Disallowed HTML tags are stripped from the preview (thanks to Jamie Zawinski)
 

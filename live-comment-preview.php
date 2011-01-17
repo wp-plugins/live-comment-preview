@@ -109,8 +109,8 @@ function lcp_output_js() {
 	// Just in case the other two methods didn't work out
 	if (!$previewFormat) {
 		$previewFormat = '
-			<ol class="commentlist" style="clear: both; margin-top: 3em;">
-				<li id="comment-preview" class="alt" style="overflow: hidden;">
+			<ol class="commentlist">
+				<li id="comment-preview">
 					<img src="' . $avatar_default . '" alt="" class="avatar avatar-' . $avatar_size . '" width="' . $avatar_size . '" height="' . $avatar_size . '"/>
 					<cite>COMMENT_AUTHOR</cite> Says:
 					<br />
