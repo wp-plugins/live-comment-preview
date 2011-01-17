@@ -98,13 +98,11 @@ function lcp_output_js() {
 	}
 		
 	if ( 'mystery' == $avatar_default )
-		$avatar_default = "$host/avatar/ad516503a11cd5ca435acc9bb6523536?s={$avatar_size}"; // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
+		$avatar_default = "$host/avatar/ad516503a11cd5ca435acc9bb6523536"; // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
 	elseif ( 'blank' == $avatar_default )
 		$avatar_default = includes_url('images/blank.gif');
 	elseif ( 'gravatar_default' == $avatar_default )
-		$avatar_default = "$host/avatar/s={$avatar_size}";
-	elseif ( strpos($avatar_default, 'http://') === 0 )
-		$avatar_default = add_query_arg( 's', $avatar_size, $avatar_default );
+		$avatar_default = "$host/avatar/";
 	
 	// Just in case the other two methods didn't work out
 	if (!$previewFormat) {
