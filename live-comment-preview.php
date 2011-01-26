@@ -96,7 +96,7 @@ function lcp_output_js() {
 		else
 			$host = 'http://0.gravatar.com';
 	}
-		
+	
 	if ( 'mystery' == $avatar_default )
 		$avatar_default = "$host/avatar/ad516503a11cd5ca435acc9bb6523536"; // ad516503a11cd5ca435acc9bb6523536 == md5('unknown@gravatar.com')
 	elseif ( 'blank' == $avatar_default )
@@ -144,7 +144,7 @@ function lcp_output_js() {
 	global $allowedtags;
 	?>
 
-var allowedtags=['<?php implode("', '", array_keys($allowedtags)) ?>'];
+var allowedtags=['<?php echo implode("', '", array_keys($allowedtags)) ?>'];
 
 function wptexturize(text) {
 	text = ' '+text+' ';
