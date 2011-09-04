@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/live-comment-preview/
 Description: Displays a preview of the user's comment as they type it.
 Author: Brad Touesnard
 Author URI: http://bradt.ca/
-Version: 2.0b1
+Version: 2.0
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ function lcp_output_js() {
 		$comment->comment_ID = 'lcp';
 		$comment->comment_content = 'COMMENT_CONTENT';
 		$comment->comment_author = 'COMMENT_AUTHOR';
+		$comment->comment_parent = 0;
 		$comment->comment_date = time();
 		
 		$wp_query->comment = $comment;
@@ -177,8 +178,6 @@ function wptexturize(text) {
 			s = s.replace(/'s/g, '&#8217;s');
 			s = s.replace(/'(\d\d(?:&#8217;|')?s)/g, '&#8217;$1');
 			s = s.replace(/([\s"])'/g, '$1&#8216;');
-			s = s.replace(/(\d+)"/g, '$1&Prime;');
-			s = s.replace(/(\d+)'/g, '$1&prime;');
 			s = s.replace(/([^\s])'([^'\s])/g, '$1&#8217;$2');
 			s = s.replace(/(\s)"([^\s])/g, '$1&#8220;$2');
 			s = s.replace(/"(\s)/g, '&#8221;$1');
@@ -351,4 +350,4 @@ if( stristr($_SERVER['REQUEST_URI'], 'live-comment-preview.js') ) {
 	add_action('template_redirect', 'lcp_output_js');
 }
 
-add_action('comment_form', 'lcp_add_preview_div');
+add_action('comment_form_after', 'lcp_add_preview_div');

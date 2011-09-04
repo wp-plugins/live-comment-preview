@@ -1,17 +1,16 @@
 === Live Comment Preview ===
 Contributors: bradt
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: comment, comments, preview
 Requires at least: 1.5
-Tested up to: 3.0.4
-Stable tag: 2.0b1
+Tested up to: 3.2
+Stable tag: 2.0
 
 Displays a preview of the user's comment as they type it.
 
 == Description ==
 
-= Latest Version: 2.0 Beta 1 =
-**This is a beta release, may not work, and may require changes to your theme files.
-Do not upgrade if you're unsure what you're doing.**
+= Latest Version: 2.0 =
 
 * Zero configuration required / intelligent parsing of theme comment HTML
 * Disallowed HTML tags are stripped from the preview (thanks to Jamie Zawinski)
@@ -24,7 +23,7 @@ responsive, smooth, live comment preview.
 
 == Installation ==
 
-Use Wordpress' built-in plugin installer, or do a manual install:
+Use WordPress' built-in plugin installer, or do a manual install:
 
 1. Download live-comment-preview.zip
 2. Unzip the archive
@@ -35,7 +34,7 @@ Enjoy!
 
 == Screenshots ==
 
-1. Comment preview in Wordpress' default theme Twenty Ten
+1. Comment preview in WordPress' default theme Twenty Ten
 
 == Frequently Asked Questions ==
 
@@ -47,7 +46,7 @@ do_action('comment_form', $post->ID); ?&gt;</code>. If it doesn't, you will need
 to add it in.
 
 Second, if the comment form fields do not have the proper id values (same ones
-as the default Wordpress theme), the comment preview will not work.
+as the default WordPress theme), the comment preview will not work.
 
 = Can I make the preview display in another location? =
 
@@ -57,7 +56,7 @@ you want the preview to be show.
 = Why doesn't the comment preview look like the rest of the comments? =
 
 Most likely because your theme does not use the standard comment HTML used by
-the Wordpress default theme. Comments should be wrapped in
+the WordPress default theme. Comments should be wrapped in
 <code>&lt;ol class="commentlist"&gt;&lt;/ol&gt;</code>.
 
 = Can I supply my own HTML for the comment preview? =
@@ -68,12 +67,17 @@ like the respective content to show up.
 
 == Changelog ==
 
+= 2.0 (2011-09-04) =
+* Bug fix: Avatar images not the correct size for Twenty Eleven theme
+* Bug fix: [The plugin does not have a valid header](http://wordpress.org/support/topic/plugin-live-comment-preview-the-plugin-does-not-have-a-valid-header)
+* Bug fix: [error rendering html ending in a digit](http://wordpress.org/support/topic/plugin-live-comment-preview-error-in-rendering-html-ending-in-a-digit)
+
 = 2.0b1 (2011-01-16) =
 * Zero configuration required / intelligent parsing of theme comment HTML
 * Disallowed HTML tags are stripped from the preview (thanks to Jamie Zawinski)
 
 = 1.9 (2008-04-19) =
-* Added support for Wordpress 2.5's gravatar settings.
+* Added support for WordPress 2.5's gravatar settings.
 * [Several Bug Fixes](http://dev.wp-plugins.org/log/live-comment-preview?action=stop_on_copy&rev=41675&stop_rev=28426&mode=stop_on_copy&verbose=on)
 
 = 1.8.2 (2007-12-03) =
@@ -91,8 +95,8 @@ like the respective content to show up.
 
 == Upgrade Notice ==
 
-= 2.0b1 =
-This is a beta release, has not been fully tested, and could cause problems. Do not upgrade if you're unsure what you're doing.
+= 2.0 =
+This is a stable release containing several small bug fixes.
 
 == Thanks! ==
 
