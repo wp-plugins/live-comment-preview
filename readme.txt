@@ -4,13 +4,13 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: comment, comments, preview
 Requires at least: 1.5
 Tested up to: 3.2
-Stable tag: 2.0
+Stable tag: 2.0.1
 
 Displays a preview of the user's comment as they type it.
 
 == Description ==
 
-= Latest Version: 2.0 =
+= New in Version 2.0 =
 
 * Zero configuration required / intelligent parsing of theme comment HTML
 * Disallowed HTML tags are stripped from the preview (thanks to Jamie Zawinski)
@@ -66,6 +66,9 @@ insert the strings COMMENT_CONTENT, COMMENT_AUTHOR, and AVATAR_URL where you wou
 like the respective content to show up.
 
 == Changelog ==
+
+= 2.0.1 (2011-09-08) =
+* Bug fix: [Doesn't appear the preview in 2.0](http://wordpress.org/support/topic/plugin-live-comment-preview-doesn«t-appear-the-preview-in-20)
 
 = 2.0 (2011-09-04) =
 * Bug fix: Avatar images not the correct size for Twenty Eleven theme
