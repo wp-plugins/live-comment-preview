@@ -1,7 +1,7 @@
 === Live Comment Preview ===
 Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
-Tags: comment, comments, preview
+Tags: comment, comments, preview, adopt-me
 Requires at least: 1.5
 Tested up to: 3.5
 Stable tag: 2.0.2
@@ -10,6 +10,9 @@ License: GPLv2
 Displays a preview of the user's comment as they type it.
 
 == Description ==
+
+This plugin is up for adoption. If you would like to take over development,
+[let me know](http://bradt.ca/contact/).
 
 = New in Version 2.0 =
 
