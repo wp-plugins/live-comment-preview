@@ -1,7 +1,6 @@
 === Live Comment Preview ===
-Contributors: bradt
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
-Tags: comment, comments, preview, adopt-me
+Contributors: bradt, saurabhshukla
+Tags: comment, comments, preview
 Requires at least: 1.5
 Tested up to: 3.5
 Stable tag: 2.0.2
