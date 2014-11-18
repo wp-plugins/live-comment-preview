@@ -10,8 +10,7 @@ Displays a preview of the user's comment as they type it.
 
 == Description ==
 
-This plugin is up for adoption. If you would like to take over development,
-[let me know](http://bradt.ca/contact/).
+This plugin has been adopted.
 
 = New in Version 2.0 =
 
@@ -46,8 +45,8 @@ Enjoy!
 = Why isn't the comment preview showing up? =
 
 First, check your theme's comments.php file. It must contain the code
-<code>&lt;?php comment_form(); ?&gt;</code> or <code>&lt;?php
-do_action('comment_form', $post->ID); ?&gt;</code>. If it doesn't, you will need
+<code><?php comment_form(); ?></code> or <code><?php
+do_action('comment_form', $post->ID); ?></code>. If it doesn't, you will need
 to add it in.
 
 Second, if the comment form fields do not have the proper id values (same ones
@@ -55,14 +54,14 @@ as the default WordPress theme), the comment preview will not work.
 
 = Can I make the preview display in another location? =
 
-Yes, you can add the code &lt;?php live_preview(); ?&gt; in comments.php where
+Yes, you can add the code <?php live_preview(); ?> in comments.php where
 you want the preview to be show.
 
 = Why doesn't the comment preview look like the rest of the comments? =
 
 Most likely because your theme does not use the standard comment HTML used by
 the WordPress default theme. Comments should be wrapped in
-<code>&lt;ol class="commentlist"&gt;&lt;/ol&gt;</code>.
+<code><ol class="commentlist"></ol></code>.
 
 = Can I supply my own HTML for the comment preview? =
 
